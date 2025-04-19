@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 
+from routers import router
+
 app = FastAPI()
 
 app_v1 = FastAPI(
@@ -9,4 +11,6 @@ app_v1 = FastAPI(
     redoc_url=None
 )
 
-app.mount("v1", app_v1)
+app.mount("/v1", app_v1)
+
+app_v1.include_router(router)
