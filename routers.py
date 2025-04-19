@@ -1,18 +1,22 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
+from fastapi_cache.decorator import cache
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from cache import get_cache_expiration, trading_key_builder, last_dates_key_builder
 from database.db_depends import get_db
 from models import TradingResults
 from schemas import SearchFilterTradingDate, SearchFilterTrading
 
+import logging
 router = APIRouter(prefix="", tags=["spimex"])
 
 
 @router.get("/last_dates")
-async def get_last_trading_dates(db: Annotated[AsyncSession, Depends(get_db)], limit: int = 5):
+@cache(expire=60, key_builder=last_dates_key_builder)
+async def get_last_trading_dates(db: Annotated[AsyncSession, Depends(get_db)], limit: int = Query(5)):
     """
     Возвращает даты последних торговых дней.
 
@@ -35,6 +39,7 @@ async def get_last_trading_dates(db: Annotated[AsyncSession, Depends(get_db)], l
 
 
 @router.get("/trading_dynamic")
+@cache(expire=get_cache_expiration(), key_builder=trading_key_builder)
 async def get_dynamics(db: Annotated[AsyncSession, Depends(get_db)],
                        data: SearchFilterTradingDate = Depends(SearchFilterTradingDate)
                        ):
@@ -60,6 +65,7 @@ async def get_dynamics(db: Annotated[AsyncSession, Depends(get_db)],
 
 
 @router.get("/last_trading")
+@cache(expire=get_cache_expiration(), key_builder=trading_key_builder)
 async def get_trading_results(db: Annotated[AsyncSession, Depends(get_db)],
                               data: SearchFilterTrading = Depends(SearchFilterTrading),
                               limit: int = 5):

@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-
+from cache import lifespan
 from routers import router
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 app_v1 = FastAPI(
     title="Домашняя работа №5",
