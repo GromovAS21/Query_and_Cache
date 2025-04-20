@@ -8,7 +8,7 @@ app_v1 = FastAPI(
     title="Домашняя работа №5",
     summary="Тема № 5 FastAPI",
     version="1.0.0",
-    redoc_url=None
+    redoc_url=None,
 )
 
 app.mount("/v1", app_v1)

@@ -22,7 +22,7 @@ class JsonCoder(Coder):
         Returns:
             Кодированные данные.
         """
-        if hasattr(value, '__iter__') and not isinstance(value, (str, bytes)):
+        if hasattr(value, "__iter__") and not isinstance(value, (str, bytes)):
             value = [cls._model_to_dict(item) for item in value]
         else:
             value = cls._model_to_dict(value)
@@ -39,7 +39,7 @@ class JsonCoder(Coder):
         Returns:
             Словарь с данными модели.
         """
-        if hasattr(model, '__table__'):
+        if hasattr(model, "__table__"):
             return {c.name: getattr(model, c.name) for c in model.__table__.columns}
         return model
 
@@ -84,8 +84,12 @@ def get_cache_expiration():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Подключение кэширование."""
-    redis_client = redis.from_url("redis://localhost:6379", encoding="utf8", decode_responses=True)
-    FastAPICache.init(RedisBackend(redis_client), prefix="fastapi-cache", coder=JsonCoder)
+    redis_client = redis.from_url(
+        "redis://localhost:6379", encoding="utf8", decode_responses=True
+    )
+    FastAPICache.init(
+        RedisBackend(redis_client), prefix="fastapi-cache", coder=JsonCoder
+    )
     yield
     await redis_client.close()
 
@@ -106,7 +110,9 @@ def trading_key_builder(func, namespace="", *args, **kwargs):
     print(data)
     limit = kwargs["kwargs"].get("limit")
     if limit:
-        return default_key_builder(func, namespace, args=(), kwargs={"data": data, "limit": limit})
+        return default_key_builder(
+            func, namespace, args=(), kwargs={"data": data, "limit": limit}
+        )
     return default_key_builder(func, namespace, args=(), kwargs={"data": data})
 
 
@@ -122,4 +128,6 @@ def last_dates_key_builder(func, namespace="", *args, **kwargs):
     Returns:
         Строенный ключ.
     """
-    return default_key_builder(func, namespace, args=(), kwargs=kwargs["kwargs"].get("limit"))
+    return default_key_builder(
+        func, namespace, args=(), kwargs=kwargs["kwargs"].get("limit")
+    )

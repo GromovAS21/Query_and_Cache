@@ -9,9 +9,15 @@ from starlette import status
 class SearchFilterTrading(BaseModel):
     """Схема фильтра для поиска торгов."""
 
-    oil_id: str | None = Field(None, description="Идентификатор топлива", pattern=r"^[A-Z0-9\-]{4}$")
-    delivery_type_id: str | None = Field(None, description="Идентификатор типа доставки", pattern=r"^[A-Z]{1}$")
-    delivery_basis_id: str | None = Field(None, description="Идентификатор типа базы доставки", pattern=r"^[A-Z]{3}$")
+    oil_id: str | None = Field(
+        None, description="Идентификатор топлива", pattern=r"^[A-Z0-9\-]{4}$"
+    )
+    delivery_type_id: str | None = Field(
+        None, description="Идентификатор типа доставки", pattern=r"^[A-Z]{1}$"
+    )
+    delivery_basis_id: str | None = Field(
+        None, description="Идентификатор типа базы доставки", pattern=r"^[A-Z]{3}$"
+    )
 
 
 class SearchFilterTradingDate(SearchFilterTrading):
@@ -27,7 +33,7 @@ class SearchFilterTradingDate(SearchFilterTrading):
         if value > date.today():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Дата начала диапазона не может быть больше текущей даты."
+                detail="Дата начала диапазона не может быть больше текущей даты.",
             )
         return value
 
@@ -38,7 +44,7 @@ class SearchFilterTradingDate(SearchFilterTrading):
         if value > date.today():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Дата конца диапазона не может быть больше текущей даты."
+                detail="Дата конца диапазона не может быть больше текущей даты.",
             )
         return value
 
@@ -48,7 +54,7 @@ class SearchFilterTradingDate(SearchFilterTrading):
         if self.start_date > self.end_date:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Дата начала диапазона не может быть больше даты конца диапазона."
+                detail="Дата начала диапазона не может быть больше даты конца диапазона.",
             )
         return self
 
@@ -60,5 +66,10 @@ class SearchFilterTradingDate(SearchFilterTrading):
         oil_id = query.get("oil_id")
         delivery_type_id = query.get("delivery_type_id")
         delivery_basis_id = query.get("delivery_basis_id")
-        return cls(start_date=start_date, end_date=end_date, oil_id=oil_id, delivery_type_id=delivery_type_id,
-                   delivery_basis_id=delivery_basis_id)
+        return cls(
+            start_date=start_date,
+            end_date=end_date,
+            oil_id=oil_id,
+            delivery_type_id=delivery_type_id,
+            delivery_basis_id=delivery_basis_id,
+        )
