@@ -1,5 +1,6 @@
 from datetime import date
 
+from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, Field, model_validator
 
 
@@ -27,5 +28,5 @@ class SearchFilterTradingDate(SearchFilterTrading):
     def validate_start_end_date(self):
         """Проверяет, что дата начала диапазона не больше даты конца диапазона."""
         if self.start_date > self.end_date:
-            raise ValueError("Дата начала диапазона не может быть больше даты конца диапазона.")
+            raise RequestValidationError([{"loc": ["start_date", "end_date"], "msg": "Дата начала диапазона не может быть больше даты конца диапазона.", "type": "value_error"}])
         return self
