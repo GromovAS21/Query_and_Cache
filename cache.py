@@ -1,10 +1,6 @@
 import json
-from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
-from fastapi_cache import FastAPICache, default_key_builder, Coder
-from fastapi_cache.backends.redis import RedisBackend
-import redis.asyncio as redis
+from fastapi_cache import default_key_builder, Coder
 
 
 class JsonCoder(Coder):
@@ -59,19 +55,6 @@ class JsonCoder(Coder):
             return json.loads(value.decode())
         if isinstance(value, str):
             return json.loads(value)
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Подключение кэширование."""
-    redis_client = redis.from_url(
-        "redis://localhost:6379", encoding="utf8", decode_responses=True
-    )
-    FastAPICache.init(
-        RedisBackend(redis_client), prefix="fastapi-cache", coder=JsonCoder
-    )
-    yield
-    await redis_client.close()
 
 
 def trading_key_builder(func, namespace="", *args, **kwargs):
