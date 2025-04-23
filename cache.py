@@ -70,7 +70,6 @@ def trading_key_builder(func, namespace="", *args, **kwargs):
         Строенный ключ.
     """
     data = kwargs["kwargs"].get("data")
-    print(data)
     limit = kwargs["kwargs"].get("limit")
     if limit:
         return default_key_builder(
