@@ -8,8 +8,22 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 import redis.asyncio as redis
 
-from cache import lifespan, JsonCoder
+from cache import JsonCoder
 from routers import router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Подключение кэширование."""
+    redis_client = redis.from_url(
+        "redis://localhost:6379", encoding="utf8", decode_responses=True
+    )
+    FastAPICache.init(
+        RedisBackend(redis_client), prefix="fastapi-cache", coder=JsonCoder
+    )
+    yield
+    await redis_client.close()
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -28,16 +42,3 @@ app_v1.include_router(router)
 @app_v1.exception_handler(RequestValidationError)
 async def validation_error_handler(request: Request, exc: RequestValidationError):
     return JSONResponse(status_code=422, content={"detail": exc.errors()})
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Подключение кэширование."""
-    redis_client = redis.from_url(
-        "redis://localhost:6379", encoding="utf8", decode_responses=True
-    )
-    FastAPICache.init(
-        RedisBackend(redis_client), prefix="fastapi-cache", coder=JsonCoder
-    )
-    yield
-    await redis_client.close()
