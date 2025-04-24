@@ -1,12 +1,12 @@
 from contextlib import asynccontextmanager
 
+import redis.asyncio as redis
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from starlette.requests import Request
 from starlette.responses import JSONResponse
-import redis.asyncio as redis
 
 from cache import JsonCoder
 from routers import router

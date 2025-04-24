@@ -5,11 +5,11 @@ from fastapi_cache.decorator import cache
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from cache import trading_key_builder, last_dates_key_builder
+from cache import last_dates_key_builder, trading_key_builder
 from constaints import default_limit, get_cache_expiration
 from database.db_depends import get_db
 from models import TradingResults
-from schemas import SearchFilterTradingDate, SearchFilterTrading
+from schemas import SearchFilterTrading, SearchFilterTradingDate
 
 router = APIRouter(prefix="", tags=["spimex"])
 
