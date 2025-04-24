@@ -61,7 +61,7 @@ async def setup_db():
                 volume=650,
                 total=25165000,
                 count=11,
-                date=datetime.strptime("2024-10-01", "%Y-%m-%d")
+                date=datetime.strptime("2024-10-01", "%Y-%m-%d"),
             ),
             TradingResults(
                 exchange_product_id="DSC5NVL005A",
@@ -73,7 +73,7 @@ async def setup_db():
                 volume=115,
                 total=5819000,
                 count=4,
-                date=datetime.strptime("2025-03-23", "%Y-%m-%d")
+                date=datetime.strptime("2025-03-23", "%Y-%m-%d"),
             ),
         ]
         session.add_all(dates)
@@ -84,5 +84,8 @@ async def setup_db():
 async def client():
     """Создает асинхронный клиент для тестов."""
     from main import app
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as ac:
         yield ac

@@ -15,14 +15,10 @@ from routers import router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     redis_client = redis.from_url(
-        "redis://localhost:6379",
-        encoding="utf8",
-        decode_responses=False
+        "redis://localhost:6379", encoding="utf8", decode_responses=False
     )
     FastAPICache.init(
-        RedisBackend(redis_client),
-        prefix="fastapi-cache",
-        coder=JsonCoder
+        RedisBackend(redis_client), prefix="fastapi-cache", coder=JsonCoder
     )
     yield
     await redis_client.aclose()
