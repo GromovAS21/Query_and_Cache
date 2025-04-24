@@ -13,3 +13,5 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 DATABASE_URL = (
     f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
+
+MODE = os.getenv("MODE")

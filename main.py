@@ -14,31 +14,31 @@ from routers import router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Подключение кэширование."""
     redis_client = redis.from_url(
-        "redis://localhost:6379", encoding="utf8", decode_responses=True
+        "redis://localhost:6379",
+        encoding="utf8",
+        decode_responses=False
     )
     FastAPICache.init(
-        RedisBackend(redis_client), prefix="fastapi-cache", coder=JsonCoder
+        RedisBackend(redis_client),
+        prefix="fastapi-cache",
+        coder=JsonCoder
     )
     yield
-    await redis_client.close()
+    await redis_client.aclose()
 
 
-app = FastAPI(lifespan=lifespan)
-
-app_v1 = FastAPI(
-    title="Домашняя работа №5",
-    summary="Тема № 5 FastAPI",
+app = FastAPI(
+    lifespan=lifespan,
+    title="Приложение с функцией кэша и написанными тэстами",
+    summary="Работает на FastAPI",
     version="1.0.0",
     redoc_url=None,
 )
 
-app.mount("/v1", app_v1)
-
-app_v1.include_router(router)
+app.include_router(router)
 
 
-@app_v1.exception_handler(RequestValidationError)
+@app.exception_handler(RequestValidationError)
 async def validation_error_handler(request: Request, exc: RequestValidationError):
     return JSONResponse(status_code=422, content={"detail": exc.errors()})
