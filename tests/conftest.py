@@ -3,13 +3,14 @@ from datetime import datetime
 
 import pytest
 import pytest_asyncio
-from fastapi_cache.backends.inmemory import InMemoryBackend
-from httpx import AsyncClient, ASGITransport
 from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import config
 from database.db import Base, engine
+from main import app
 from models import TradingResults
 
 
@@ -83,9 +84,7 @@ async def setup_db():
 @pytest_asyncio.fixture
 async def client():
     """Создает асинхронный клиент для тестов."""
-    from main import app
-
     async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
+            transport=ASGITransport(app=app), base_url="http://test"
     ) as ac:
         yield ac
