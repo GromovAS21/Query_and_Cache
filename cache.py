@@ -1,6 +1,6 @@
 import json
 
-from fastapi_cache import default_key_builder, Coder
+from fastapi_cache import Coder, default_key_builder
 
 
 class JsonCoder(Coder):
