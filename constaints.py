@@ -2,6 +2,7 @@ from datetime import datetime, time, timedelta
 
 default_limit = 5
 
+
 def get_cache_expiration():
     """
     Возвращает время до истечения кэша (до 14:11 текущего дня).
